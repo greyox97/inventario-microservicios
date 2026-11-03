@@ -1,6 +1,41 @@
-@ProductService_HostAddress = http://localhost:5281
+@ProductService_HostAddress = http://localhost:5001
 
-GET {{ProductService_HostAddress}}/weatherforecast/
+### List products (paginated, with optional filters)
+GET {{ProductService_HostAddress}}/api/products?page=1&pageSize=5
 Accept: application/json
 
-###
+### Filter by name, category, price range and availability
+GET {{ProductService_HostAddress}}/api/products?name=jean&category=Ropa de hombre&minPrice=10&maxPrice=100&inStock=true
+Accept: application/json
+
+### List categories (for the filter dropdown)
+GET {{ProductService_HostAddress}}/api/products/categories
+
+### Get product by id
+GET {{ProductService_HostAddress}}/api/products/1
+
+### Create product
+POST {{ProductService_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Blusa de seda",
+  "description": "Blusa elegante color marfil",
+  "category": "Ropa de mujer",
+  "price": 45.00,
+  "stock": 10
+}
+
+### Update product (stock is not editable here)
+PUT {{ProductService_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "Vestido de lino verano",
+  "description": "Vestido ligero color beige, tallas S a L",
+  "category": "Ropa de mujer",
+  "price": 62.00
+}
+
+### Delete product (soft delete)
+DELETE {{ProductService_HostAddress}}/api/products/9
