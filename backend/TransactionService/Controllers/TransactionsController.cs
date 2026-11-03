@@ -27,4 +27,26 @@ public class TransactionsController : ControllerBase
     {
         return Ok(await _transactionsService.GetByIdAsync(id, ct));
     }
+
+    [HttpPost]
+    public async Task<ActionResult<TransactionResponse>> Create(
+        CreateTransactionRequest request, CancellationToken ct)
+    {
+        var created = await _transactionsService.CreateAsync(request, ct);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<TransactionResponse>> Update(
+        int id, UpdateTransactionRequest request, CancellationToken ct)
+    {
+        return Ok(await _transactionsService.UpdateAsync(id, request, ct));
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<IActionResult> Delete(int id, CancellationToken ct)
+    {
+        await _transactionsService.DeleteAsync(id, ct);
+        return NoContent();
+    }
 }

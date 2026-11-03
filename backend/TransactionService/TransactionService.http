@@ -18,3 +18,67 @@ GET {{TransactionService_HostAddress}}/api/transactions/1
 
 ### Invalid range
 GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-10-31&dateTo=2026-10-01
+
+### Create sale (price comes from the product)
+POST {{TransactionService_HostAddress}}/api/transactions
+Content-Type: application/json
+
+{
+  "transactionType": "SALE",
+  "productId": 2,
+  "quantity": 2,
+  "detail": "Venta en mostrador"
+}
+
+### Create sale exceeding stock (expects 409)
+POST {{TransactionService_HostAddress}}/api/transactions
+Content-Type: application/json
+
+{
+  "transactionType": "SALE",
+  "productId": 2,
+  "quantity": 999
+}
+
+### Create purchase (unit price required)
+POST {{TransactionService_HostAddress}}/api/transactions
+Content-Type: application/json
+
+{
+  "transactionType": "PURCHASE",
+  "productId": 2,
+  "quantity": 10,
+  "unitPrice": 26.00,
+  "detail": "Reposición de denim"
+}
+
+### Create purchase without unit price (expects 400)
+POST {{TransactionService_HostAddress}}/api/transactions
+Content-Type: application/json
+
+{
+  "transactionType": "PURCHASE",
+  "productId": 2,
+  "quantity": 10
+}
+
+### Update transaction (use the id returned by the create calls)
+PUT {{TransactionService_HostAddress}}/api/transactions/10
+Content-Type: application/json
+
+{
+  "quantity": 3,
+  "detail": "Venta corregida"
+}
+
+### Delete transaction
+DELETE {{TransactionService_HostAddress}}/api/transactions/10
+
+### Edit seed purchase below what was already sold (expects 409)
+PUT {{TransactionService_HostAddress}}/api/transactions/3
+Content-Type: application/json
+
+{ "quantity": 2 }
+
+### Delete seed purchase already consumed (expects 409)
+DELETE {{TransactionService_HostAddress}}/api/transactions/3

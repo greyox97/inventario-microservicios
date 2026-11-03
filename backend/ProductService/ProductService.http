@@ -42,3 +42,15 @@ Content-Type: application/json
 
 ### Delete product (soft delete)
 DELETE {{ProductService_HostAddress}}/api/products/9
+
+### Adjust stock (internal use)
+POST {{ProductService_HostAddress}}/api/products/2/stock-adjustments
+Content-Type: application/json
+
+{ "delta": -3 }
+
+### Adjust stock beyond availability (expects 409)
+POST {{ProductService_HostAddress}}/api/products/2/stock-adjustments
+Content-Type: application/json
+
+{ "delta": -1000 }
