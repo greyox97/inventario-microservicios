@@ -24,6 +24,7 @@ public class InventoryDbContext : DbContext
             entity.Property(p => p.Category).IsRequired().HasMaxLength(100);
             entity.Property(p => p.ImageUrl).HasMaxLength(500);
             entity.Property(p => p.Price).HasPrecision(18, 2);
+            entity.HasQueryFilter(p => p.IsActive);
         });
     }
 }
