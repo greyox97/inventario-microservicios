@@ -34,6 +34,13 @@ public class ProductsController : ControllerBase
         return Ok(await _productsService.GetCategoriesAsync(ct));
     }
 
+    [HttpGet("batch")]
+    public async Task<ActionResult<IReadOnlyList<ProductResponse>>> GetByIds(
+        [FromQuery] int[] ids, CancellationToken ct)
+    {
+        return Ok(await _productsService.GetByIdsAsync(ids, ct));
+    }
+
     [HttpPost]
     public async Task<ActionResult<ProductResponse>> Create(
         CreateProductRequest request, CancellationToken ct)

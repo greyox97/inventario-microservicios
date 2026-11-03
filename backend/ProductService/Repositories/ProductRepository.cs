@@ -70,4 +70,15 @@ public class ProductRepository : IProductRepository
     {
         await _context.SaveChangesAsync(ct);
     }
+
+    public async Task<IReadOnlyList<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct = default)
+    {
+        var idList = ids.Distinct().ToList();
+
+        return await _context.Products
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .Where(p => idList.Contains(p.Id))
+            .ToListAsync(ct);
+    }
 }

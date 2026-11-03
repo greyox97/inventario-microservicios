@@ -95,4 +95,10 @@ public class ProductsService : IProductsService
             product.Price,
             product.Stock);
     }
+    public async Task<IReadOnlyList<ProductResponse>> GetByIdsAsync(
+        IEnumerable<int> ids, CancellationToken ct = default)
+    {
+        var products = await _productRepository.GetByIdsAsync(ids, ct);
+        return products.Select(ToResponse).ToList();
+    }
 }

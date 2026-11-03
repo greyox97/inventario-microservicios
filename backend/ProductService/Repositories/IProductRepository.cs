@@ -9,6 +9,8 @@ public interface IProductRepository
         ProductFilter filter, CancellationToken ct = default);
 
     Task<Product?> GetByIdAsync(int id, CancellationToken ct = default);
+    
+    Task<IReadOnlyList<Product>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken ct = default);
 
     Task<IReadOnlyList<string>> GetCategoriesAsync(CancellationToken ct = default);
 
