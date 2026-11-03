@@ -95,10 +95,24 @@ public class ProductsService : IProductsService
             product.Price,
             product.Stock);
     }
+   
     public async Task<IReadOnlyList<ProductResponse>> GetByIdsAsync(
         IEnumerable<int> ids, CancellationToken ct = default)
     {
         var products = await _productRepository.GetByIdsAsync(ids, ct);
         return products.Select(ToResponse).ToList();
+    }
+   
+    public async Task<ProductResponse> AdjustStockAsync(
+    int id, AdjustStockRequest request, CancellationToken ct = default)
+    {
+        var adjusted = await _productRepository.TryAdjustStockAsync(id, request.Delta, ct);
+        var product = await GetExistingAsync(id, ct);
+
+        if (!adjusted)
+            throw new InsufficientStockException(
+                $"Stock insuficiente para aplicar el ajuste. Stock disponible: {product.Stock}.");
+
+        return ToResponse(product);
     }
 }

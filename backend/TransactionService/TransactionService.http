@@ -1,6 +1,20 @@
-@TransactionService_HostAddress = http://localhost:5003
+@TransactionService_HostAddress = http://localhost:5002
 
-GET {{TransactionService_HostAddress}}/weatherforecast/
+### List transactions (paginated)
+GET {{TransactionService_HostAddress}}/api/transactions?page=1&pageSize=10
 Accept: application/json
 
-###
+### Filter by type and date range
+GET {{TransactionService_HostAddress}}/api/transactions?type=SALE&dateFrom=2026-10-01&dateTo=2026-10-31
+
+### Single day (inclusive)
+GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-08-05&dateTo=2026-08-05
+
+### History of one product
+GET {{TransactionService_HostAddress}}/api/transactions?productId=1
+
+### Get transaction by id
+GET {{TransactionService_HostAddress}}/api/transactions/1
+
+### Invalid range
+GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-10-31&dateTo=2026-10-01

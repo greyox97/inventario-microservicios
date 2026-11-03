@@ -81,4 +81,14 @@ public class ProductRepository : IProductRepository
             .Where(p => idList.Contains(p.Id))
             .ToListAsync(ct);
     }
+
+    public async Task<bool> TryAdjustStockAsync(int id, int delta, CancellationToken ct = default)
+    {
+        var affectedRows = await _context.Products
+            .Where(p => p.Id == id && p.Stock + delta >= 0)
+            .ExecuteUpdateAsync(
+                setters => setters.SetProperty(p => p.Stock, p => p.Stock + delta), ct);
+
+        return affectedRows > 0;
+    }
 }

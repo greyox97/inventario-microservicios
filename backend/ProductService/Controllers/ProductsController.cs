@@ -49,6 +49,13 @@ public class ProductsController : ControllerBase
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
     }
 
+    [HttpPost("{id:int}/stock-adjustments")]
+    public async Task<ActionResult<ProductResponse>> AdjustStock(
+        int id, AdjustStockRequest request, CancellationToken ct)
+    {
+        return Ok(await _productsService.AdjustStockAsync(id, request, ct));
+    }
+
     [HttpPut("{id:int}")]
     public async Task<ActionResult<ProductResponse>> Update(
         int id, UpdateProductRequest request, CancellationToken ct)

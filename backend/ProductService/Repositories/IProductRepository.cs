@@ -17,4 +17,6 @@ public interface IProductRepository
     Task AddAsync(Product product, CancellationToken ct = default);
 
     Task SaveChangesAsync(CancellationToken ct = default);
+
+    Task<bool> TryAdjustStockAsync(int id, int delta, CancellationToken ct = default);
 }

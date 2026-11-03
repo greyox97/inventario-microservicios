@@ -18,6 +18,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         var (status, title) = exception switch
         {
             NotFoundException => (StatusCodes.Status404NotFound, "Recurso no encontrado"),
+            InsufficientStockException => (StatusCodes.Status409Conflict, "Stock insuficiente"),
             _ => (StatusCodes.Status500InternalServerError, "Error interno del servidor")
         };
 
