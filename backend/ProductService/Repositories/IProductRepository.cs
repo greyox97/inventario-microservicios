@@ -19,4 +19,6 @@ public interface IProductRepository
     Task SaveChangesAsync(CancellationToken ct = default);
 
     Task<bool> TryAdjustStockAsync(int id, int delta, CancellationToken ct = default);
+
+    Task<bool> NameExistsAsync(string name, int? excludeId, CancellationToken ct);
 }

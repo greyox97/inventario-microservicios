@@ -2,6 +2,8 @@ using ProductService.Dtos;
 using ProductService.Entities;
 using ProductService.Exceptions;
 using ProductService.Repositories;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace ProductService.Services;
 
@@ -37,9 +39,14 @@ public class ProductsService : IProductsService
     public async Task<ProductResponse> CreateAsync(
         CreateProductRequest request, CancellationToken ct = default)
     {
+        var name = request.Name.Trim();
+
+        if (await _productRepository.NameExistsAsync(name, null, ct))
+            throw new DuplicateProductException(name);
+
         var product = new Product
         {
-            Name = request.Name.Trim(),
+            Name = name,
             Description = request.Description?.Trim(),
             Category = request.Category.Trim(),
             ImageUrl = request.ImageUrl?.Trim(),
@@ -48,7 +55,15 @@ public class ProductsService : IProductsService
         };
 
         await _productRepository.AddAsync(product, ct);
-        await _productRepository.SaveChangesAsync(ct);
+
+        try
+        {
+            await _productRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
+        {
+            throw new DuplicateProductException(name);
+        }
 
         return ToResponse(product);
     }
@@ -58,13 +73,25 @@ public class ProductsService : IProductsService
     {
         var product = await GetExistingAsync(id, ct);
 
-        product.Name = request.Name.Trim();
+        var name = request.Name.Trim();
+
+        if (await _productRepository.NameExistsAsync(name, id, ct))
+            throw new DuplicateProductException(name);
+
+        product.Name = name;
         product.Description = request.Description?.Trim();
         product.Category = request.Category.Trim();
         product.ImageUrl = request.ImageUrl?.Trim();
         product.Price = request.Price;
 
-        await _productRepository.SaveChangesAsync(ct);
+        try
+        {
+            await _productRepository.SaveChangesAsync(ct);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqlException { Number: 2601 or 2627 })
+        {
+            throw new DuplicateProductException(name);
+        }
 
         return ToResponse(product);
     }

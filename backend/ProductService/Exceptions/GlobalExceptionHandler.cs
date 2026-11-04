@@ -19,6 +19,7 @@ public class GlobalExceptionHandler : IExceptionHandler
         {
             NotFoundException => (StatusCodes.Status404NotFound, "Recurso no encontrado"),
             InsufficientStockException => (StatusCodes.Status409Conflict, "Stock insuficiente"),
+            DuplicateProductException => (StatusCodes.Status409Conflict, "Producto duplicado"),
             _ => (StatusCodes.Status500InternalServerError, "Error interno del servidor")
         };
 

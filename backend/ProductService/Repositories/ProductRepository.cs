@@ -91,4 +91,7 @@ public class ProductRepository : IProductRepository
 
         return affectedRows > 0;
     }
+
+    public Task<bool> NameExistsAsync(string name, int? excludeId, CancellationToken ct) =>
+        _context.Products.AnyAsync(p => p.Name == name && (excludeId == null || p.Id != excludeId), ct);
 }
