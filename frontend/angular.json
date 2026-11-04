@@ -29,7 +29,11 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "node_modules/@fontsource-variable/bodoni-moda/index.css",
+              "node_modules/@fontsource-variable/hanken-grotesk/index.css",
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {

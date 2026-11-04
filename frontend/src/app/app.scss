@@ -1,0 +1,127 @@
+:host {
+  display: block;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--canvas);
+  border-block-end: 1px solid var(--line);
+}
+
+.brand {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+/* Mobile first: navigation fixed at the bottom */
+.nav {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--canvas);
+  border-block-start: 1px solid var(--line);
+}
+
+.nav a {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 3.5rem;
+  padding: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--ink);
+  background: var(--silk);
+}
+
+.nav a.is-active:not(.nav-action) {
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--blush);
+}
+
+.nav-action {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.nav-action .nav-icon {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+.page {
+  max-width: 70rem;
+  margin-inline: auto;
+  padding: var(--space-6) var(--space-4) calc(5rem + env(safe-area-inset-bottom));
+}
+
+.page:focus {
+  outline: none;
+}
+
+/* From tablet up: navigation moves to the top bar */
+@media (min-width: 48rem) {
+  .topbar {
+    padding-inline: var(--space-8);
+  }
+
+  .nav {
+    position: static;
+    align-items: center;
+    gap: var(--space-2);
+    padding-bottom: 0;
+    border: 0;
+  }
+
+  .nav a {
+    flex: none;
+    flex-direction: row;
+    gap: var(--space-2);
+    min-height: var(--target);
+    padding: 0 var(--space-4);
+    font-size: var(--text-base);
+    border-radius: var(--radius-control);
+  }
+
+  .nav-action {
+    background: var(--gold);
+  }
+
+  .nav-action:hover {
+    color: var(--ink);
+    background: var(--gold);
+    box-shadow: inset 0 0 0 2px var(--ink);
+  }
+
+  .nav-action .nav-icon {
+    width: auto;
+    height: auto;
+    background: none;
+  }
+
+  .page {
+    padding: var(--space-8) var(--space-8) var(--space-12);
+  }
+}
