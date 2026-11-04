@@ -125,3 +125,51 @@
     padding: var(--space-8) var(--space-8) var(--space-12);
   }
 }
+
+.toast-region {
+  position: fixed;
+  inset-inline: var(--space-4);
+  bottom: calc(4.5rem + env(safe-area-inset-bottom));
+  z-index: 20;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  color: var(--canvas);
+  background: var(--ink);
+  border-radius: var(--radius-control);
+  pointer-events: auto;
+}
+
+.toast-close {
+  min-width: var(--target);
+  min-height: var(--target);
+  font: inherit;
+  font-size: var(--text-lg);
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.toast :focus-visible {
+  outline-color: var(--canvas);
+}
+
+@media (min-width: 48rem) {
+  .toast-region {
+    inset-inline: var(--space-8) auto;
+    bottom: var(--space-8);
+  }
+
+  .toast {
+    margin: 0;
+  }
+}

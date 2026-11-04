@@ -3,7 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PagedResult } from '../models/paged-result';
-import { Product, ProductQuery } from '../models/product';
+import { Product, ProductQuery, NewProductInput, ProductInput } from '../models/product';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsApi {
@@ -22,5 +22,17 @@ export class ProductsApi {
 
   categories(): Observable<string[]> {
     return this.http.get<string[]>(`${this.baseUrl}/categories`);
+  }
+
+  get(id: number): Observable<Product> {
+    return this.http.get<Product>(`${this.baseUrl}/${id}`);
+  }
+
+  create(body: NewProductInput): Observable<Product> {
+    return this.http.post<Product>(this.baseUrl, body);
+  }
+
+  update(id: number, body: ProductInput): Observable<Product> {
+    return this.http.put<Product>(`${this.baseUrl}/${id}`, body);
   }
 }

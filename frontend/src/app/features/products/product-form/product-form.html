@@ -1,1 +1,114 @@
-<p>product-form works!</p>
+<h1>{{ isEdit ? 'Editar producto' : 'Nuevo producto' }}</h1>
+
+@switch (loadState()) {
+  @case ('loading') {
+    <p role="status">Cargando producto…</p>
+  }
+
+  @case ('notFound') {
+    <div class="notice">
+      <p>No encontramos este producto. Puede que haya sido eliminado.</p>
+      <a class="btn btn-secondary" routerLink="/productos">Volver a productos</a>
+    </div>
+  }
+
+  @case ('error') {
+    <div class="notice" role="alert">
+      <p>No pudimos cargar el producto. Revisa que el servicio esté en marcha.</p>
+      <button type="button" class="btn btn-secondary" (click)="load()">Reintentar</button>
+    </div>
+  }
+
+  @case ('ready') {
+    <form class="form" novalidate [formGroup]="form" (ngSubmit)="submit()">
+      <div class="field">
+        <label for="f-name">Nombre</label>
+        <input id="f-name" type="text" formControlName="name" autocomplete="off"
+               [attr.aria-invalid]="error('name') ? 'true' : null"
+               [attr.aria-describedby]="error('name') ? 'e-name' : null" />
+        @if (error('name'); as msg) {
+          <p class="error" id="e-name"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="f-category">Categoría</label>
+        <input id="f-category" type="text" formControlName="category" list="categorias"
+               autocomplete="off"
+               [attr.aria-invalid]="error('category') ? 'true' : null"
+               [attr.aria-describedby]="error('category') ? 'e-category' : 'h-category'" />
+        <datalist id="categorias">
+          @for (c of categories(); track c) {
+            <option [value]="c"></option>
+          }
+        </datalist>
+        <p class="hint" id="h-category">Elige una existente o escribe una nueva.</p>
+        @if (error('category'); as msg) {
+          <p class="error" id="e-category"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="f-description">Descripción (opcional)</label>
+        <textarea id="f-description" rows="3" formControlName="description"
+                  [attr.aria-invalid]="error('description') ? 'true' : null"
+                  [attr.aria-describedby]="error('description') ? 'e-description' : null"></textarea>
+        @if (error('description'); as msg) {
+          <p class="error" id="e-description"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="f-price">Precio (USD)</label>
+        <input id="f-price" type="number" inputmode="decimal" step="0.01" formControlName="price"
+               [attr.aria-invalid]="error('price') ? 'true' : null"
+               [attr.aria-describedby]="error('price') ? 'e-price' : null" />
+        @if (error('price'); as msg) {
+          <p class="error" id="e-price"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      @if (isEdit) {
+        <div class="field">
+          <p class="label">Stock actual</p>
+          <p class="static">{{ currentStock() }} unidades</p>
+          <p class="hint">
+            El stock cambia al registrar una compra o una venta.
+            <a routerLink="/movimientos/nuevo">Registrar movimiento</a>
+          </p>
+        </div>
+      } @else {
+        <div class="field">
+          <label for="f-stock">Stock inicial</label>
+          <input id="f-stock" type="number" inputmode="numeric" step="1" formControlName="stock"
+                 [attr.aria-invalid]="error('stock') ? 'true' : null"
+                 [attr.aria-describedby]="error('stock') ? 'e-stock' : null" />
+          @if (error('stock'); as msg) {
+            <p class="error" id="e-stock"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="f-imageUrl">Imagen (opcional)</label>
+        <input id="f-imageUrl" type="text" formControlName="imageUrl" autocomplete="off"
+               [attr.aria-invalid]="error('imageUrl') ? 'true' : null"
+               [attr.aria-describedby]="error('imageUrl') ? 'e-imageUrl' : null" />
+        @if (error('imageUrl'); as msg) {
+          <p class="error" id="e-imageUrl"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      @if (formError(); as msg) {
+        <p class="banner" role="alert">{{ msg }}</p>
+      }
+
+      <div class="actions">
+        <button type="submit" class="btn btn-primary" [disabled]="saving()">
+          {{ saving() ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear producto' }}
+        </button>
+        <a class="btn btn-secondary" routerLink="/productos">Cancelar</a>
+      </div>
+    </form>
+  }
+}

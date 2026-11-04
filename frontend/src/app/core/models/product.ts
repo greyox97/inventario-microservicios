@@ -15,3 +15,15 @@ export interface ProductQuery {
   page: number;
   pageSize: number;
 }
+
+export interface ProductInput {
+  name: string;
+  description: string | null;
+  category: string;
+  imageUrl: string | null;
+  price: number;
+}
+
+export interface NewProductInput extends ProductInput {
+  stock: number;
+}
