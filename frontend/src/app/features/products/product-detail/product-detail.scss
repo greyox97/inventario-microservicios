@@ -1,0 +1,158 @@
+.back {
+  margin: 0 0 var(--space-4);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+.photo {
+  width: 100%;
+  max-width: 20rem;
+  aspect-ratio: 3 / 4;
+  background: var(--silk);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.photo-empty {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  font-family: var(--font-display);
+  font-size: 6rem;
+  color: var(--bronze);
+  background: var(--blush);
+}
+
+.facts {
+  margin: 0;
+
+  div {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-block-end: 1px solid var(--line);
+  }
+
+  dt {
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .wide dd {
+    font-weight: 400;
+  }
+}
+
+.is-out {
+  color: var(--error);
+}
+
+h2 {
+  font-size: var(--text-lg);
+}
+
+.notice {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: var(--space-3) var(--space-2);
+  text-align: start;
+  vertical-align: middle;
+  border-block-end: 1px solid var(--line);
+}
+
+th {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.type {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-control);
+}
+
+.type.is-sale {
+  background: var(--blush);
+}
+
+.more {
+  margin-top: var(--space-4);
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+}
+
+@media (min-width: 48rem) {
+  .layout {
+    grid-template-columns: 20rem 1fr;
+    align-items: start;
+  }
+
+  th,
+  td {
+    padding-inline: var(--space-4);
+  }
+}

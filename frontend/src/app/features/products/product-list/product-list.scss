@@ -209,12 +209,12 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--target);
-  margin-inline-end: var(--space-3);
 }
 
 .row-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
   gap: var(--space-2);
 }
@@ -238,4 +238,9 @@
   p {
     margin: 0;
   }
+}
+
+.card-title a,
+.cell-product a {
+  color: var(--ink);
 }

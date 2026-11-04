@@ -1,0 +1,137 @@
+<p class="back"><a routerLink="/productos">← Volver a productos</a></p>
+
+@switch (loadState()) {
+  @case ('loading') {
+    <p role="status">Cargando producto…</p>
+  }
+
+  @case ('notFound') {
+    <div class="notice">
+      <h1>Producto no encontrado</h1>
+      <p>No encontramos este producto. Puede que haya sido eliminado.</p>
+      <a class="btn btn-secondary" routerLink="/productos">Volver a productos</a>
+    </div>
+  }
+
+  @case ('error') {
+    <div class="notice" role="alert">
+      <p>No pudimos cargar el producto. Revisa que el servicio esté en marcha.</p>
+      <button type="button" class="btn btn-secondary" (click)="load()">Reintentar</button>
+    </div>
+  }
+
+  @case ('ready') {
+    @if (product(); as p) {
+      <header class="head">
+        <h1>{{ p.name }}</h1>
+        <div class="head-actions">
+          <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']">Editar</a>
+          <a
+            class="btn btn-primary"
+            routerLink="/movimientos/nuevo"
+            [queryParams]="{ productId: p.id }"
+            >Registrar movimiento</a
+          >
+        </div>
+      </header>
+
+      <div class="layout">
+        <div class="photo">
+          @if (p.imageUrl) {
+            <img [src]="p.imageUrl" [alt]="'Foto de ' + p.name" width="480" height="640" />
+          } @else {
+            <div class="photo-empty" aria-hidden="true">{{ initial(p.name) }}</div>
+          }
+        </div>
+
+        <dl class="facts">
+          <div>
+            <dt>Categoría</dt>
+            <dd>{{ p.category }}</dd>
+          </div>
+          <div>
+            <dt>Precio</dt>
+            <dd>{{ p.price | currency: 'USD' }}</dd>
+          </div>
+          <div>
+            <dt>Stock</dt>
+            <dd [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</dd>
+          </div>
+          @if (p.description) {
+            <div class="wide">
+              <dt>Descripción</dt>
+              <dd>{{ p.description }}</dd>
+            </div>
+          }
+        </dl>
+      </div>
+
+      <section aria-labelledby="h-history">
+        <h2 id="h-history">Últimos movimientos</h2>
+
+        @switch (historyState()) {
+          @case ('loading') {
+            <p role="status">Cargando movimientos…</p>
+          }
+
+          @case ('error') {
+            <div class="notice" role="alert">
+              <p>No pudimos cargar los movimientos de este producto.</p>
+              <button type="button" class="btn btn-secondary" (click)="loadHistory()">
+                Reintentar
+              </button>
+            </div>
+          }
+
+          @case ('ready') {
+            @if (recent().length === 0) {
+              <p>Este producto aún no tiene movimientos.</p>
+            } @else {
+              <table>
+                <caption class="visually-hidden">
+                  Últimos movimientos de
+                  {{
+                    p.name
+                  }}
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col" class="num">Cantidad</th>
+                    <th scope="col" class="num">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (t of recent(); track t.id) {
+                    <tr>
+                      <td>
+                        <time [attr.datetime]="t.transactionDate">{{
+                          t.transactionDate | date: 'd MMM, HH:mm'
+                        }}</time>
+                      </td>
+                      <td>
+                        <span class="type" [class.is-sale]="t.transactionType === 'SALE'">{{
+                          typeLabel(t)
+                        }}</span>
+                      </td>
+                      <td class="num">{{ t.quantity }}</td>
+                      <td class="num">{{ t.totalPrice | currency: 'USD' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+
+              <p class="more">
+                <a routerLink="/movimientos" [queryParams]="{ productId: p.id }">
+                  Ver los {{ movementsTotal() }}
+                  {{ movementsTotal() === 1 ? 'movimiento' : 'movimientos' }}
+                </a>
+              </p>
+            }
+          }
+        }
+      </section>
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal, effect } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   NonNullableFormBuilder,
@@ -35,6 +35,8 @@ export class TransactionForm {
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly idParam = inject(ActivatedRoute).snapshot.paramMap.get('id');
+  private readonly presetProductId =
+    inject(ActivatedRoute).snapshot.queryParamMap.get('productId') ?? '';
   protected readonly isEdit = this.idParam !== null;
   private readonly transactionId = Number(this.idParam);
 
@@ -80,7 +82,7 @@ export class TransactionForm {
 
   protected readonly form = this.fb.group({
     type: this.fb.control<TransactionType>('SALE'),
-    productId: ['', Validators.required],
+    productId: [this.presetProductId, Validators.required],
     quantity: this.fb.control<number | null>(1, [
       Validators.required,
       Validators.min(1),
@@ -144,14 +146,23 @@ export class TransactionForm {
       .subscribe(() => {
         this.form.controls.quantity.updateValueAndValidity();
         this.form.controls.unitPrice.updateValueAndValidity();
-        if (!this.isEdit) this.form.controls.quantity.setValue(1);
       });
+
+    // Switching between sale and purchase starts again from 1 unit.
+    this.form.controls.type.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      if (!this.isEdit) this.form.controls.quantity.setValue(1);
+    });
 
     if (this.isEdit) {
       this.form.controls.type.disable();
       this.form.controls.productId.disable();
       this.load();
     }
+
+    effect(() => {
+      this.products();
+      this.form.controls.quantity.updateValueAndValidity();
+    });
   }
 
   protected load(): void {

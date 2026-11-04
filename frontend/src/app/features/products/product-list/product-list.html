@@ -13,8 +13,14 @@
   Filtros
 </button>
 
-<form id="filtros" class="filters" role="search" aria-label="Filtrar productos"
-      [class.is-open]="filtersOpen()" [formGroup]="filters">
+<form
+  id="filtros"
+  class="filters"
+  role="search"
+  aria-label="Filtrar productos"
+  [class.is-open]="filtersOpen()"
+  [formGroup]="filters"
+>
   <div class="field">
     <label for="f-name">Nombre</label>
     <input id="f-name" type="search" formControlName="name" autocomplete="off" />
@@ -60,7 +66,9 @@
   @if (s.data.items.length === 0) {
     <div class="notice">
       <p>No hay productos que coincidan con los filtros.</p>
-      <button type="button" class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
+      <button type="button" class="btn btn-secondary" (click)="clearFilters()">
+        Limpiar filtros
+      </button>
     </div>
   } @else {
     <!-- Mobile: photo-first rows -->
@@ -73,17 +81,31 @@
             <span class="thumb thumb-empty" aria-hidden="true">{{ initial(p.name) }}</span>
           }
           <div>
-            <h2 class="card-title">{{ p.name }}</h2>
+            <h2 class="card-title">
+              <a [routerLink]="['/productos', p.id]">{{ p.name }}</a>
+            </h2>
             <p class="meta">{{ p.category }}</p>
             <p class="price">{{ p.price | currency: 'USD' }}</p>
             <p class="meta" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</p>
-            <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }">Ver historial</a>
+            <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }"
+              >Ver historial</a
+            >
           </div>
           <div class="row-actions">
-            <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
-              [attr.aria-label]="'Editar ' + p.name">Editar</a>
-            <button type="button" class="btn btn-secondary" (click)="remove(p)"
-              [attr.aria-label]="'Eliminar ' + p.name">Eliminar</button>
+            <a
+              class="btn btn-secondary"
+              [routerLink]="['/productos', p.id, 'editar']"
+              [attr.aria-label]="'Editar ' + p.name"
+              >Editar</a
+            >
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="remove(p)"
+              [attr.aria-label]="'Eliminar ' + p.name"
+            >
+              Eliminar
+            </button>
           </div>
         </li>
       }
@@ -92,7 +114,9 @@
     <!-- Tablet and up: real table -->
     <div class="table-wrap">
       <table>
-        <caption class="visually-hidden">Lista de productos</caption>
+        <caption class="visually-hidden">
+          Lista de productos
+        </caption>
         <thead>
           <tr>
             <th scope="col">Producto</th>
@@ -108,7 +132,14 @@
               <td>
                 <div class="cell-product">
                   @if (p.imageUrl) {
-                    <img class="thumb" [src]="p.imageUrl" alt="" width="48" height="64" loading="lazy" />
+                    <img
+                      class="thumb"
+                      [src]="p.imageUrl"
+                      alt=""
+                      width="48"
+                      height="64"
+                      loading="lazy"
+                    />
                   } @else {
                     <span class="thumb thumb-empty" aria-hidden="true">{{ initial(p.name) }}</span>
                   }
@@ -120,12 +151,27 @@
               <td class="num" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</td>
               <td class="num">
                 <div class="row-actions">
-                  <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }"
-                    [attr.aria-label]="'Ver historial de ' + p.name">Historial</a>
-                  <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
-                    [attr.aria-label]="'Editar ' + p.name">Editar</a>
-                  <button type="button" class="btn btn-secondary" (click)="remove(p)"
-                    [attr.aria-label]="'Eliminar ' + p.name">Eliminar</button>
+                  <a
+                    class="history-link"
+                    routerLink="/movimientos"
+                    [queryParams]="{ productId: p.id }"
+                    [attr.aria-label]="'Ver historial de ' + p.name"
+                    >Historial</a
+                  >
+                  <a
+                    class="btn btn-secondary"
+                    [routerLink]="['/productos', p.id, 'editar']"
+                    [attr.aria-label]="'Editar ' + p.name"
+                    >Editar</a
+                  >
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="remove(p)"
+                    [attr.aria-label]="'Eliminar ' + p.name"
+                  >
+                    Eliminar
+                  </button>
                 </div>
               </td>
             </tr>
@@ -135,11 +181,23 @@
     </div>
 
     <nav class="pager" aria-label="Paginación">
-      <button type="button" class="btn btn-secondary"
-              [disabled]="s.data.page <= 1" (click)="goToPage(s.data.page - 1)">Anterior</button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="s.data.page <= 1"
+        (click)="goToPage(s.data.page - 1)"
+      >
+        Anterior
+      </button>
       <span>Página {{ s.data.page }} de {{ totalPages(s.data) }}</span>
-      <button type="button" class="btn btn-secondary"
-              [disabled]="s.data.page >= totalPages(s.data)" (click)="goToPage(s.data.page + 1)">Siguiente</button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="s.data.page >= totalPages(s.data)"
+        (click)="goToPage(s.data.page + 1)"
+      >
+        Siguiente
+      </button>
     </nav>
   }
 }
