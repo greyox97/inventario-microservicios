@@ -143,7 +143,16 @@
                   } @else {
                     <span class="thumb thumb-empty" aria-hidden="true">{{ initial(p.name) }}</span>
                   }
-                  <span>{{ p.name }}</span>
+                  <div class="cell-text">
+                    <a [routerLink]="['/productos', p.id]">{{ p.name }}</a>
+                    <a
+                      class="history-link"
+                      routerLink="/movimientos"
+                      [queryParams]="{ productId: p.id }"
+                      [attr.aria-label]="'Ver historial de ' + p.name"
+                      >Ver historial</a
+                    >
+                  </div>
                 </div>
               </td>
               <td>{{ p.category }}</td>
@@ -151,13 +160,6 @@
               <td class="num" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</td>
               <td class="num">
                 <div class="row-actions">
-                  <a
-                    class="history-link"
-                    routerLink="/movimientos"
-                    [queryParams]="{ productId: p.id }"
-                    [attr.aria-label]="'Ver historial de ' + p.name"
-                    >Historial</a
-                  >
                   <a
                     class="btn btn-secondary"
                     [routerLink]="['/productos', p.id, 'editar']"

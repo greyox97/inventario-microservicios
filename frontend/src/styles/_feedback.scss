@@ -1,0 +1,34 @@
+.status {
+  min-height: 1.5em;
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.notice {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  padding: var(--space-6) 0;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-4);
+  font-weight: 600;
+  border: 2px solid var(--error);
+  border-radius: var(--radius-control);
+
+  p {
+    margin: 0;
+  }
+}
+
+.is-out {
+  font-weight: 600;
+  color: var(--error);
+}

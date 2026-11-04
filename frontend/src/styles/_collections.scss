@@ -1,0 +1,168 @@
+/* Page header */
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+
+  h1 {
+    margin: 0;
+  }
+}
+
+/* Filters: collapsed on mobile, always visible from tablet */
+.filters-toggle {
+  margin-bottom: var(--space-4);
+}
+
+.filters {
+  display: none;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  background: var(--silk);
+}
+
+.filters.is-open {
+  display: grid;
+}
+
+.filters .field label {
+  font-size: var(--text-sm);
+}
+
+/* Mobile rows */
+.cards {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-block-end: 1px solid var(--line);
+}
+
+.card-title {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+
+.meta,
+.price {
+  margin: 0;
+}
+
+.meta {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.price {
+  margin-block: var(--space-1);
+  font-weight: 600;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.card .row-actions {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Table */
+.table-wrap {
+  display: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: var(--space-3) var(--space-2);
+  text-align: start;
+  vertical-align: middle;
+  border-block-end: 1px solid var(--line);
+}
+
+th {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.num {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+table .row-actions {
+  flex-wrap: nowrap;
+}
+
+table .btn {
+  padding-inline: var(--space-4);
+}
+
+/* Sale / purchase badge */
+.type {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-control);
+}
+
+.type.is-sale {
+  background: var(--blush);
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+@media (min-width: 48rem) {
+  .filters-toggle {
+    display: none;
+  }
+
+  .filters {
+    display: grid;
+    align-items: end;
+  }
+
+  .cards {
+    display: none;
+  }
+
+  .table-wrap {
+    display: block;
+  }
+
+  th,
+  td {
+    padding-inline: var(--space-4);
+  }
+}

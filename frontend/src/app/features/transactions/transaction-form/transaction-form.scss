@@ -1,62 +1,3 @@
-.form {
-  display: grid;
-  gap: var(--space-6);
-  max-width: 36rem;
-}
-
-.field {
-  display: grid;
-  gap: var(--space-1);
-
-  label {
-    font-weight: 600;
-  }
-
-  input,
-  select,
-  textarea {
-    min-height: var(--target);
-    padding: var(--space-2) var(--space-3);
-    font: inherit;
-    color: var(--ink);
-    background: var(--canvas);
-    border: 1px solid var(--ink);
-    border-radius: var(--radius-control);
-  }
-
-  textarea {
-    resize: vertical;
-  }
-
-  input[aria-invalid='true'],
-  select[aria-invalid='true'],
-  textarea[aria-invalid='true'] {
-    border: 2px solid var(--error);
-  }
-}
-
-.error {
-  margin: 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--error);
-}
-
-.banner {
-  margin: 0;
-  padding: var(--space-4);
-  font-weight: 600;
-  border: 2px solid var(--error);
-  border-radius: var(--radius-control);
-}
-
-.notice {
-  display: grid;
-  justify-items: start;
-  gap: var(--space-3);
-  padding: var(--space-6) 0;
-}
-
 /* Sale / Purchase toggle */
 .segmented {
   display: grid;
@@ -175,12 +116,6 @@
   font-size: var(--text-display);
   font-variant-numeric: lining-nums;
   line-height: 1;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
 }
 
 @media (min-width: 48rem) {

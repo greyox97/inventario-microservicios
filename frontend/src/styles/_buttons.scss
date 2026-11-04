@@ -1,0 +1,49 @@
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-width: var(--target);
+  min-height: var(--target);
+  padding: 0 var(--space-6);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: var(--radius-control);
+}
+
+.btn-primary {
+  color: var(--ink);
+  background: var(--gold);
+}
+
+.btn-primary:hover {
+  border-color: var(--ink);
+}
+
+.btn-secondary {
+  color: var(--ink);
+  background: var(--canvas);
+  border-color: var(--ink);
+}
+
+.btn-secondary:hover {
+  background: var(--blush);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn-danger {
+  color: var(--canvas);
+  background: var(--error);
+}
+
+.btn-danger:hover {
+  border-color: var(--ink);
+}
