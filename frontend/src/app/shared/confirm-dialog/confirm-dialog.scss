@@ -1,0 +1,28 @@
+.dialog {
+  width: min(28rem, calc(100vw - 2rem));
+  padding: var(--space-6);
+  color: var(--ink);
+  background: var(--canvas);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-control);
+}
+
+.dialog::backdrop {
+  background: rgb(42 27 37 / 0.6);
+}
+
+h2 {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-lg);
+}
+
+p {
+  margin: 0 0 var(--space-6);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}

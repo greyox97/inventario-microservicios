@@ -37,4 +37,8 @@ export class TransactionsApi {
   update(id: number, body: UpdateTransactionInput): Observable<Transaction> {
     return this.http.put<Transaction>(`${this.baseUrl}/${id}`, body);
   }
+
+  remove(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }

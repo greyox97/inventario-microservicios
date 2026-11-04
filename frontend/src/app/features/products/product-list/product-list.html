@@ -40,6 +40,13 @@
 
 <p class="status" role="status">{{ summary() }}</p>
 
+@if (actionError(); as msg) {
+  <div class="banner" role="alert">
+    <p>{{ msg }}</p>
+    <button type="button" class="btn btn-secondary" (click)="dismissError()">Cerrar</button>
+  </div>
+}
+
 @let s = state();
 
 @if (s.status === 'error') {
@@ -72,8 +79,12 @@
             <p class="meta" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</p>
             <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }">Ver historial</a>
           </div>
-          <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
-             [attr.aria-label]="'Editar ' + p.name">Editar</a>
+          <div class="row-actions">
+            <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
+              [attr.aria-label]="'Editar ' + p.name">Editar</a>
+            <button type="button" class="btn btn-secondary" (click)="remove(p)"
+              [attr.aria-label]="'Eliminar ' + p.name">Eliminar</button>
+          </div>
         </li>
       }
     </ul>
@@ -108,10 +119,14 @@
               <td class="num">{{ p.price | currency: 'USD' }}</td>
               <td class="num" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</td>
               <td class="num">
-                <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }"
-                   [attr.aria-label]="'Ver historial de ' + p.name">Historial</a>
-                <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
-                   [attr.aria-label]="'Editar ' + p.name">Editar</a>
+                <div class="row-actions">
+                  <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }"
+                    [attr.aria-label]="'Ver historial de ' + p.name">Historial</a>
+                  <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
+                    [attr.aria-label]="'Editar ' + p.name">Editar</a>
+                  <button type="button" class="btn btn-secondary" (click)="remove(p)"
+                    [attr.aria-label]="'Eliminar ' + p.name">Eliminar</button>
+                </div>
               </td>
             </tr>
           }

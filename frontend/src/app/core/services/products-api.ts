@@ -35,4 +35,8 @@ export class ProductsApi {
   update(id: number, body: ProductInput): Observable<Product> {
     return this.http.put<Product>(`${this.baseUrl}/${id}`, body);
   }
+
+  remove(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
 }
