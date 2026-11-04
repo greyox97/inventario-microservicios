@@ -25,6 +25,15 @@ IF OBJECT_ID('dbo.Products', 'U') IS NULL
 
 
 GO
+IF NOT EXISTS (SELECT 1
+               FROM   sys.indexes
+               WHERE  name = 'UX_Products_Name_Active'
+                      AND object_id = OBJECT_ID('dbo.Products'))
+    CREATE UNIQUE INDEX UX_Products_Name_Active
+        ON dbo.Products(Name) WHERE IsActive = 1;
+
+
+GO
 IF OBJECT_ID('dbo.Transactions', 'U') IS NULL
     CREATE TABLE dbo.Transactions (
         Id              INT             IDENTITY (1, 1) NOT NULL,
@@ -55,38 +64,55 @@ CREATE INDEX IX_Transactions_ProductId_Date
 
 GO
 -- Seed data
-INSERT  INTO dbo.Products (
-    Name,
-    Description,
-    Category,
-    Price,
-    Stock
-)
-VALUES                    (N'Vestido de lino verano', N'Vestido ligero color beige, tallas S a L', N'Ropa de mujer', 59.90, 24),
-                          (N'Jean slim fit', N'Denim azul oscuro elástico, tallas 30 a 38', N'Ropa de hombre', 49.90, 32),
-                          (N'Bolso bandolera de cuero', N'Cuero genuino con correa ajustable', N'Accesorios', 89.00, 12),
-                          (N'Pañuelo de seda', N'Estampado 100% seda, 90x90 cm', N'Accesorios', 34.50, 20),
-                          (N'Zapatillas blancas de cuero', N'Estilo minimalista, tallas 36 a 45', N'Calzado', 74.90, 16),
-                          (N'Camiseta cuello redondo', N'Corte clásico de algodón, disponible en 5 colores', N'Ropa de hombre', 19.90, 45),
-                          (N'Abrigo de lana', N'Abrigo largo color camel con forro interior', N'Ropa de mujer', 129.00, 8),
-                          (N'Aretes de aro bañados en oro', N'Hipoalergénicos, 30 mm de diámetro', N'Joyería', 22.00, 38);
+IF NOT EXISTS (SELECT 1
+               FROM   dbo.Products)
+    BEGIN
+        INSERT  INTO dbo.Products (
+            Name,
+            Description,
+            Category,
+            Price,
+            Stock
+        )
+        VALUES                    (N'Blusa de satén estampada', N'Manga larga con estampado floral, tallas S a L', N'Blusas', 34.90, 16),
+                                  (N'Blusa de lino blanca', N'Corte holgado con botones al frente, tallas S a XL', N'Blusas', 29.90, 19),
+                                  (N'Vestido midi floral', N'Vestido cruzado con cinturón, tallas S a L', N'Vestidos', 54.90, 15),
+                                  (N'Vestido rojo de fiesta', N'Largo con escote en V, tallas S a L', N'Vestidos', 79.90, 8),
+                                  (N'Conjunto de tweed rosa', N'Chaqueta y falda a juego, tallas S a L', N'Conjuntos', 89.00, 8),
+                                  (N'Enterizo negro', N'Pantalón amplio con cinturón, tallas S a L', N'Enterizos', 64.90, 7),
+                                  (N'Loafers de cuero beige', N'Suela gruesa, tallas 35 a 40', N'Calzado', 59.90, 11),
+                                  (N'Cartera de mano dorada', N'Cadena extraíble y cierre magnético', N'Accesorios', 39.50, 20);
+    END
 
 
 GO
-INSERT  INTO dbo.Transactions (
-    TransactionDate,
-    TransactionType,
-    ProductId,
-    Quantity,
-    UnitPrice,
-    TotalPrice,
-    Detail
-)
-VALUES                        ('2026-08-03T09:00:00', 'PURCHASE', 1, 30, 30.00, 900.00, N'Colección de verano - Proveedor Textil Andina'),
-                              ('2026-08-03T09:15:00', 'PURCHASE', 2, 40, 25.00, 1000.00, N'Reposición de denim'),
-                              ('2026-08-05T10:30:00', 'PURCHASE', 3, 15, 45.00, 675.00, N'Pedido de artículos de cuero'),
-                              ('2026-08-05T10:45:00', 'PURCHASE', 4, 25, 15.00, 375.00, N'Lote de pañuelos de seda'),
-                              ('2026-09-02T12:10:00', 'SALE', 1, 6, 59.90, 359.40, N'Ventas en tienda'),
-                              ('2026-09-09T16:30:00', 'SALE', 2, 8, 49.90, 399.20, N'Pedidos en línea semana 36'),
-                              ('2026-09-15T13:00:00', 'SALE', 3, 3, 89.00, 267.00, N'Venta en mostrador'),
-                              ('2026-09-21T18:20:00', 'SALE', 4, 5, 34.50, 172.50, N'Sets de regalo');
+IF NOT EXISTS (SELECT 1
+               FROM   dbo.Transactions)
+    BEGIN
+        INSERT  INTO dbo.Transactions (
+            TransactionDate,
+            TransactionType,
+            ProductId,
+            Quantity,
+            UnitPrice,
+            TotalPrice,
+            Detail
+        )
+        VALUES                        -- Purchases (UnitPrice = supplier cost)
+                                      ('2026-09-02T14:00:00', 'PURCHASE', 1, 20, 18.00, 360.00, N'Pedido inicial de blusas'),
+                                      ('2026-09-02T14:20:00', 'PURCHASE', 2, 25, 15.00, 375.00, N'Reposición de blusas de lino'),
+                                      ('2026-09-08T15:00:00', 'PURCHASE', 3, 18, 28.00, 504.00, N'Pedido de vestidos de temporada'),
+                                      ('2026-09-08T15:15:00', 'PURCHASE', 4, 10, 42.00, 420.00, N'Vestidos de fiesta'),
+                                      ('2026-09-15T16:00:00', 'PURCHASE', 5, 8, 50.00, 400.00, N'Conjuntos de tweed'),
+                                      ('2026-09-15T16:30:00', 'PURCHASE', 6, 12, 34.00, 408.00, N'Pedido de enterizos'),
+                                      ('2026-09-22T14:45:00', 'PURCHASE', 7, 14, 32.00, 448.00, N'Pedido de loafers'),
+                                      ('2026-09-22T15:10:00', 'PURCHASE', 8, 30, 17.00, 510.00, N'Lote de carteras y accesorios'),
+                                      -- Sales (UnitPrice = selling price)
+                                      ('2026-10-03T17:10:00', 'SALE', 1, 4, 34.90, 139.60, N'Ventas en tienda'),
+                                      ('2026-10-06T18:25:00', 'SALE', 2, 6, 29.90, 179.40, N'Pedidos en línea'),
+                                      ('2026-10-10T20:05:00', 'SALE', 3, 3, 54.90, 164.70, N'Venta en mostrador'),
+                                      ('2026-10-17T22:30:00', 'SALE', 4, 2, 79.90, 159.80, N'Ventas de fin de semana'),
+                                      ('2026-10-21T16:40:00', 'SALE', 6, 5, 64.90, 324.50, N'Promoción de temporada'),
+                                      ('2026-10-24T19:15:00', 'SALE', 7, 3, 59.90, 179.70, N'Pedido en línea'),
+                                      ('2026-10-28T21:00:00', 'SALE', 8, 10, 39.50, 395.00, N'Ventas de la semana');
+    END
