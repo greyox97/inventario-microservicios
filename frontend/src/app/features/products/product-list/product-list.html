@@ -70,6 +70,7 @@
             <p class="meta">{{ p.category }}</p>
             <p class="price">{{ p.price | currency: 'USD' }}</p>
             <p class="meta" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</p>
+            <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }">Ver historial</a>
           </div>
           <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
              [attr.aria-label]="'Editar ' + p.name">Editar</a>
@@ -107,6 +108,8 @@
               <td class="num">{{ p.price | currency: 'USD' }}</td>
               <td class="num" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</td>
               <td class="num">
+                <a class="history-link" routerLink="/movimientos" [queryParams]="{ productId: p.id }"
+                   [attr.aria-label]="'Ver historial de ' + p.name">Historial</a>
                 <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
                    [attr.aria-label]="'Editar ' + p.name">Editar</a>
               </td>

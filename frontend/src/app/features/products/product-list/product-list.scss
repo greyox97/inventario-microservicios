@@ -204,3 +204,10 @@
     font-size: var(--text-lg);
   }
 }
+
+.history-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+  margin-inline-end: var(--space-3);
+}
