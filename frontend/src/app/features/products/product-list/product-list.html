@@ -1,1 +1,127 @@
-<p>product-list works!</p>
+<header class="head">
+  <h1>Productos</h1>
+  <a class="btn btn-primary" routerLink="/productos/nuevo">Nuevo producto</a>
+</header>
+
+<button
+  type="button"
+  class="btn btn-secondary filters-toggle"
+  aria-controls="filtros"
+  [attr.aria-expanded]="filtersOpen()"
+  (click)="toggleFilters()"
+>
+  Filtros
+</button>
+
+<form id="filtros" class="filters" role="search" aria-label="Filtrar productos"
+      [class.is-open]="filtersOpen()" [formGroup]="filters">
+  <div class="field">
+    <label for="f-name">Nombre</label>
+    <input id="f-name" type="search" formControlName="name" autocomplete="off" />
+  </div>
+
+  <div class="field">
+    <label for="f-category">Categoría</label>
+    <select id="f-category" formControlName="category">
+      <option value="">Todas</option>
+      @for (c of categories(); track c) {
+        <option [value]="c">{{ c }}</option>
+      }
+    </select>
+  </div>
+
+  <label class="check">
+    <input type="checkbox" formControlName="inStock" />
+    Solo con stock
+  </label>
+
+  <button type="button" class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
+</form>
+
+<p class="status" role="status">{{ summary() }}</p>
+
+@let s = state();
+
+@if (s.status === 'error') {
+  <div class="notice" role="alert">
+    <p>No pudimos cargar los productos. Revisa que el servicio esté en marcha.</p>
+    <button type="button" class="btn btn-secondary" (click)="reload()">Reintentar</button>
+  </div>
+}
+
+@if (s.status === 'ready') {
+  @if (s.data.items.length === 0) {
+    <div class="notice">
+      <p>No hay productos que coincidan con los filtros.</p>
+      <button type="button" class="btn btn-secondary" (click)="clearFilters()">Limpiar filtros</button>
+    </div>
+  } @else {
+    <!-- Mobile: photo-first rows -->
+    <ul class="cards">
+      @for (p of s.data.items; track p.id) {
+        <li class="card">
+          @if (p.imageUrl) {
+            <img class="thumb" [src]="p.imageUrl" alt="" width="72" height="96" loading="lazy" />
+          } @else {
+            <span class="thumb thumb-empty" aria-hidden="true">{{ initial(p.name) }}</span>
+          }
+          <div>
+            <h2 class="card-title">{{ p.name }}</h2>
+            <p class="meta">{{ p.category }}</p>
+            <p class="price">{{ p.price | currency: 'USD' }}</p>
+            <p class="meta" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</p>
+          </div>
+          <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
+             [attr.aria-label]="'Editar ' + p.name">Editar</a>
+        </li>
+      }
+    </ul>
+
+    <!-- Tablet and up: real table -->
+    <div class="table-wrap">
+      <table>
+        <caption class="visually-hidden">Lista de productos</caption>
+        <thead>
+          <tr>
+            <th scope="col">Producto</th>
+            <th scope="col">Categoría</th>
+            <th scope="col" class="num">Precio</th>
+            <th scope="col" class="num">Stock</th>
+            <th scope="col"><span class="visually-hidden">Acciones</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (p of s.data.items; track p.id) {
+            <tr>
+              <td>
+                <div class="cell-product">
+                  @if (p.imageUrl) {
+                    <img class="thumb" [src]="p.imageUrl" alt="" width="48" height="64" loading="lazy" />
+                  } @else {
+                    <span class="thumb thumb-empty" aria-hidden="true">{{ initial(p.name) }}</span>
+                  }
+                  <span>{{ p.name }}</span>
+                </div>
+              </td>
+              <td>{{ p.category }}</td>
+              <td class="num">{{ p.price | currency: 'USD' }}</td>
+              <td class="num" [class.is-out]="p.stock === 0">{{ stockLabel(p.stock) }}</td>
+              <td class="num">
+                <a class="btn btn-secondary" [routerLink]="['/productos', p.id, 'editar']"
+                   [attr.aria-label]="'Editar ' + p.name">Editar</a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <nav class="pager" aria-label="Paginación">
+      <button type="button" class="btn btn-secondary"
+              [disabled]="s.data.page <= 1" (click)="goToPage(s.data.page - 1)">Anterior</button>
+      <span>Página {{ s.data.page }} de {{ totalPages(s.data) }}</span>
+      <button type="button" class="btn btn-secondary"
+              [disabled]="s.data.page >= totalPages(s.data)" (click)="goToPage(s.data.page + 1)">Siguiente</button>
+    </nav>
+  }
+}

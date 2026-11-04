@@ -1,9 +1,101 @@
-import { Component } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { catchError, debounceTime, map, of, startWith, switchMap } from 'rxjs';
+import { PagedResult } from '../../../core/models/paged-result';
+import { Product, ProductQuery } from '../../../core/models/product';
+import { ProductsApi } from '../../../core/services/products-api';
+
+type ListState =
+  { status: 'loading' } | { status: 'error' } | { status: 'ready'; data: PagedResult<Product> };
 
 @Component({
-  imports: [],
   selector: 'app-product-list',
-  styleUrl: './product-list.scss',
+  imports: [CurrencyPipe, ReactiveFormsModule, RouterLink],
   templateUrl: './product-list.html',
+  styleUrl: './product-list.scss',
 })
-export class ProductList {}
+export class ProductList {
+  private readonly api = inject(ProductsApi);
+  private readonly fb = inject(NonNullableFormBuilder);
+
+  protected readonly filtersOpen = signal(false);
+  protected readonly filters = this.fb.group({
+    name: '',
+    category: '',
+    inStock: false,
+  });
+
+  private readonly query = signal<ProductQuery>({ page: 1, pageSize: 10 });
+
+  protected readonly categories = toSignal(
+    this.api.categories().pipe(catchError(() => of([] as string[]))),
+    { initialValue: [] as string[] },
+  );
+
+  protected readonly state = toSignal(
+    toObservable(this.query).pipe(
+      switchMap((q) =>
+        this.api.list(q).pipe(
+          map((data): ListState => ({ status: 'ready', data })),
+          catchError(() => of<ListState>({ status: 'error' })),
+          startWith<ListState>({ status: 'loading' }),
+        ),
+      ),
+    ),
+    { initialValue: { status: 'loading' } as ListState },
+  );
+
+  protected readonly summary = computed(() => {
+    const s = this.state();
+    if (s.status === 'loading') return 'Cargando productos…';
+    if (s.status === 'error') return '';
+    const n = s.data.totalCount;
+    return `${n} ${n === 1 ? 'producto' : 'productos'}`;
+  });
+
+  constructor() {
+    this.filters.valueChanges.pipe(debounceTime(300), takeUntilDestroyed()).subscribe((v) => {
+      this.query.update((q) => ({
+        ...q,
+        name: v.name?.trim() || undefined,
+        category: v.category || undefined,
+        inStock: v.inStock || undefined,
+        page: 1,
+      }));
+    });
+  }
+
+  protected toggleFilters(): void {
+    this.filtersOpen.update((open) => !open);
+  }
+
+  protected clearFilters(): void {
+    this.filters.reset();
+  }
+
+  protected goToPage(page: number): void {
+    this.query.update((q) => ({ ...q, page }));
+  }
+
+  protected reload(): void {
+    this.query.update((q) => ({ ...q }));
+  }
+
+  protected totalPages(data: PagedResult<Product>): number {
+    return Math.max(1, Math.ceil(data.totalCount / data.pageSize));
+  }
+
+  protected initial(name: string): string {
+    return name.charAt(0).toUpperCase();
+  }
+
+  protected stockLabel(stock: number): string {
+    if (stock === 0) return 'Agotado';
+    if (stock === 1) return 'Queda 1';
+    if (stock <= 5) return `Quedan ${stock}`;
+    return `${stock} en stock`;
+  }
+}
