@@ -21,3 +21,17 @@ export interface TransactionQuery {
   page: number;
   pageSize: number;
 }
+
+export interface NewTransactionInput {
+  transactionType: TransactionType;
+  productId: number;
+  quantity: number;
+  unitPrice: number | null;
+  detail: string | null;
+}
+
+export interface UpdateTransactionInput {
+  quantity: number;
+  unitPrice: number | null;
+  detail: string | null;
+}

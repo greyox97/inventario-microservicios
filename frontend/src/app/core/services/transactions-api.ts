@@ -3,7 +3,12 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PagedResult } from '../models/paged-result';
-import { Transaction, TransactionQuery } from '../models/transaction';
+import {
+  Transaction,
+  TransactionQuery,
+  NewTransactionInput,
+  UpdateTransactionInput,
+} from '../models/transaction';
 
 @Injectable({ providedIn: 'root' })
 export class TransactionsApi {
@@ -19,5 +24,17 @@ export class TransactionsApi {
     if (query.dateTo) params = params.set('dateTo', query.dateTo);
 
     return this.http.get<PagedResult<Transaction>>(this.baseUrl, { params });
+  }
+
+  get(id: number): Observable<Transaction> {
+    return this.http.get<Transaction>(`${this.baseUrl}/${id}`);
+  }
+
+  create(body: NewTransactionInput): Observable<Transaction> {
+    return this.http.post<Transaction>(this.baseUrl, body);
+  }
+
+  update(id: number, body: UpdateTransactionInput): Observable<Transaction> {
+    return this.http.put<Transaction>(`${this.baseUrl}/${id}`, body);
   }
 }

@@ -1,1 +1,134 @@
-<p>transaction-form works!</p>
+<h1>{{ isEdit ? 'Editar movimiento' : 'Registrar movimiento' }}</h1>
+
+@switch (loadState()) {
+  @case ('loading') {
+    <p role="status">Cargando movimiento…</p>
+  }
+
+  @case ('notFound') {
+    <div class="notice">
+      <p>No encontramos este movimiento. Puede que haya sido eliminado.</p>
+      <a class="btn btn-secondary" routerLink="/movimientos">Volver a movimientos</a>
+    </div>
+  }
+
+  @case ('error') {
+    <div class="notice" role="alert">
+      <p>No pudimos cargar el movimiento. Revisa que el servicio esté en marcha.</p>
+      <button type="button" class="btn btn-secondary" (click)="load()">Reintentar</button>
+    </div>
+  }
+
+  @case ('ready') {
+    <form class="form" novalidate [formGroup]="form" (ngSubmit)="submit()">
+      @if (isEdit) {
+        @if (loaded(); as t) {
+          <dl class="facts">
+            <div><dt>Tipo</dt><dd>{{ typeLabel(t.transactionType) }}</dd></div>
+            <div><dt>Producto</dt><dd>{{ t.productName }}</dd></div>
+            <div><dt>Fecha</dt><dd>{{ t.transactionDate | date: 'd MMM y, HH:mm' }}</dd></div>
+            <div><dt>Stock actual</dt><dd>{{ t.currentStock ?? 'No disponible' }}</dd></div>
+            @if (t.transactionType === 'SALE') {
+              <div><dt>Precio de venta</dt><dd>{{ t.unitPrice | currency: 'USD' }}</dd></div>
+            }
+          </dl>
+        }
+      } @else {
+        <fieldset class="segmented">
+          <legend>Tipo de movimiento</legend>
+          <label class="seg">
+            <input type="radio" formControlName="type" value="SALE" />
+            <span>Venta</span>
+          </label>
+          <label class="seg">
+            <input type="radio" formControlName="type" value="PURCHASE" />
+            <span>Compra</span>
+          </label>
+        </fieldset>
+
+        <div class="field">
+          <label for="f-productId">Producto</label>
+          <select id="f-productId" formControlName="productId"
+                  [attr.aria-invalid]="error('productId') ? 'true' : null"
+                  [attr.aria-describedby]="error('productId') ? 'e-productId' : null">
+            <option value="">Selecciona un producto</option>
+            @for (p of products(); track p.id) {
+              <option [value]="p.id" [disabled]="isSale() && p.stock === 0">{{ optionLabel(p) }}</option>
+            }
+          </select>
+          @if (error('productId'); as msg) {
+            <p class="error" id="e-productId"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+          }
+        </div>
+
+        @if (product(); as p) {
+          <dl class="facts">
+            <div><dt>Stock disponible</dt><dd>{{ p.stock }}</dd></div>
+            @if (isSale()) {
+              <div><dt>Precio de venta</dt><dd>{{ p.price | currency: 'USD' }}</dd></div>
+            }
+          </dl>
+        }
+      }
+
+      <div class="field">
+        <label for="f-quantity">Cantidad</label>
+        <div class="stepper">
+          <button type="button" class="btn btn-secondary" aria-label="Disminuir cantidad" (click)="step(-1)">−</button>
+          <input id="f-quantity" type="number" inputmode="numeric" step="1" formControlName="quantity"
+                 [attr.aria-invalid]="error('quantity') ? 'true' : null"
+                 [attr.aria-describedby]="error('quantity') ? 'e-quantity' : null" />
+          <button type="button" class="btn btn-secondary" aria-label="Aumentar cantidad" (click)="step(1)">+</button>
+        </div>
+        @if (error('quantity'); as msg) {
+          <p class="error" id="e-quantity"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      @if (!isSale()) {
+        <div class="field">
+          <label for="f-unitPrice">Precio de compra por unidad (USD)</label>
+          <input id="f-unitPrice" type="number" inputmode="decimal" step="0.01" formControlName="unitPrice"
+                 [attr.aria-invalid]="error('unitPrice') ? 'true' : null"
+                 [attr.aria-describedby]="error('unitPrice') ? 'e-unitPrice' : null" />
+          @if (error('unitPrice'); as msg) {
+            <p class="error" id="e-unitPrice"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+          }
+        </div>
+      }
+
+      <div class="field">
+        <label for="f-detail">Detalle (opcional)</label>
+        <textarea id="f-detail" rows="2" formControlName="detail"
+                  [attr.aria-invalid]="error('detail') ? 'true' : null"
+                  [attr.aria-describedby]="error('detail') ? 'e-detail' : null"></textarea>
+        @if (error('detail'); as msg) {
+          <p class="error" id="e-detail"><span class="visually-hidden">Error: </span>{{ msg }}</p>
+        }
+      </div>
+
+      @if (formError(); as msg) {
+        <p class="banner" role="alert">{{ msg }}</p>
+      }
+
+      <div class="summary">
+        <div>
+          <p class="total-label">Total</p>
+          <p class="total" id="total-value">
+            @if (total() !== null) {
+              {{ total() | currency: 'USD' }}
+            } @else {
+              <span aria-hidden="true">—</span><span class="visually-hidden">Aún sin calcular</span>
+            }
+          </p>
+        </div>
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" aria-describedby="total-value" [disabled]="saving()">
+            {{ submitLabel() }}
+          </button>
+          <a class="btn btn-secondary" routerLink="/movimientos">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  }
+}
