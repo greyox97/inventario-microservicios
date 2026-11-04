@@ -5,10 +5,10 @@ GET {{TransactionService_HostAddress}}/api/transactions?page=1&pageSize=10
 Accept: application/json
 
 ### Filter by type and date range
-GET {{TransactionService_HostAddress}}/api/transactions?type=SALE&dateFrom=2026-10-01&dateTo=2026-10-31
+GET {{TransactionService_HostAddress}}/api/transactions?type=SALE&dateFrom=2026-10-01T05:00:00Z&dateTo=2026-10-31T05:00:00Z
 
 ### Single day (inclusive)
-GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-08-05&dateTo=2026-08-05
+GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-08-05T05:00:00Z&dateTo=2026-08-05T05:00:00Z
 
 ### History of one product
 GET {{TransactionService_HostAddress}}/api/transactions?productId=1
@@ -17,7 +17,7 @@ GET {{TransactionService_HostAddress}}/api/transactions?productId=1
 GET {{TransactionService_HostAddress}}/api/transactions/1
 
 ### Invalid range
-GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-10-31&dateTo=2026-10-01
+GET {{TransactionService_HostAddress}}/api/transactions?dateFrom=2026-10-31T05:00:00Z&dateTo=2026-10-01T05:00:00Z
 
 ### Create sale (price comes from the product)
 POST {{TransactionService_HostAddress}}/api/transactions

@@ -26,10 +26,16 @@ public class TransactionRepository : ITransactionRepository
             query = query.Where(t => t.ProductId == filter.ProductId.Value);
 
         if (filter.DateFrom.HasValue)
-            query = query.Where(t => t.TransactionDate >= filter.DateFrom.Value.Date);
+        {
+            var from = filter.DateFrom.Value.UtcDateTime;
+            query = query.Where(t => t.TransactionDate >= from);
+        }
 
         if (filter.DateTo.HasValue)
-            query = query.Where(t => t.TransactionDate < filter.DateTo.Value.Date.AddDays(1));
+        {
+            var to = filter.DateTo.Value.UtcDateTime;
+            query = query.Where(t => t.TransactionDate < to);
+        }
 
         var totalCount = await query.CountAsync(ct);
 
