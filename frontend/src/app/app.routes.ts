@@ -45,14 +45,14 @@ export const routes: Routes = [
       ),
   },
   {
-    path: '**',
-    title: 'Página no encontrada · JM Boutique',
-    loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),
-  },
-  {
     path: 'productos/:id',
     title: 'Detalle de producto · JM Boutique',
     loadComponent: () =>
       import('./features/products/product-detail/product-detail').then((m) => m.ProductDetail),
+  },
+  {
+    path: '**',
+    title: 'Página no encontrada · JM Boutique',
+    loadComponent: () => import('./features/not-found/not-found').then((m) => m.NotFound),
   },
 ];
