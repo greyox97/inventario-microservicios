@@ -55,11 +55,19 @@ IF OBJECT_ID('dbo.Transactions', 'U') IS NULL
 
 GO
 -- Indexes
-CREATE INDEX IX_Products_Category
-    ON dbo.Products(Category);
+IF NOT EXISTS (SELECT 1
+               FROM   sys.indexes
+               WHERE  name = 'IX_Products_Category'
+                      AND object_id = OBJECT_ID('dbo.Products'))
+    CREATE INDEX IX_Products_Category
+        ON dbo.Products(Category);
 
-CREATE INDEX IX_Transactions_ProductId_Date
-    ON dbo.Transactions(ProductId, TransactionDate DESC);
+IF NOT EXISTS (SELECT 1
+               FROM   sys.indexes
+               WHERE  name = 'IX_Transactions_ProductId_Date'
+                      AND object_id = OBJECT_ID('dbo.Transactions'))
+    CREATE INDEX IX_Transactions_ProductId_Date
+        ON dbo.Transactions(ProductId, TransactionDate DESC);
 
 
 GO
